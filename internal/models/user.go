@@ -1,19 +1,19 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type User struct {
-	ID        string    `gorm:"primary_key;column:id;size:36;not null;<-:create"`
+	BaseModel // gunakan id, createdAt, dan updatedAt dari base model
+
 	Username  string    `gorm:"column:username;size:20;not null;unique"`
 	Email     string    `gorm:"column:email;size:60;not null;unique"`
 	Password  string    `gorm:"column:password;size:255;not null"`
-	CreatedAt time.Time `gorm:"column:created_at;autoCreateTime;<-:create"` 
-	UpdatedAt time.Time `gorm:"column:updated_at;autoCreateTime;autoUpdateTime"`
+
+	// relasi ke tabel child (has many)
+	Book []Book `gorm:"foreignKey:id_user;references:id"`
 }
 
 // membuat method baru untuk mengganti nama tabel (alias)

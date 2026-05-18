@@ -1,12 +1,19 @@
-package pinjam_buku
+package main
 
 import (
-	"fmt"
+	"pinjam-buku/internal/database"
+	"pinjam-buku/internal/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 func main() {
+	// koneksi database
+	db := database.OpenConnection()
+
+	// running auto migration
+	database.RunMigration(db)
+	
 	// membuat object app untuk representasi dari fiber
 	app := fiber.New(
 		fiber.Config{
@@ -16,24 +23,13 @@ func main() {
 		},
 	)
 
+	// implementasi middleware logger
+	middlewares.LoggerMiddleware(app)
+
 	// implementasi endpoint routing
 	app.Get("/", func (ctx *fiber.Ctx) error {
 		// menampilkan hello world 
 		return ctx.SendString("Hello World")
-	})
-
-	// implementasi middleware
-	// membuat middleware untuk melakukan loggging request (untuk semua endpoint)
-	// untuk mencatat log dari request masuk dan keluar
-	app.Use(func (ctx *fiber.Ctx) error {
-		fmt.Println("This is middleware before processing request")
-		
-		// memanggil Ctx.Next, untuk melanjutkan ke proses selanjutnya
-		err := ctx.Next()
-
-		fmt.Println("This is middleware after processing request")
-
-		return err 
 	})
 
 	// menjalankan server 

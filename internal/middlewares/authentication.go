@@ -1,3 +1,3 @@
-package pinjam_buku
+package middlewares
 
 func authentication() {}
