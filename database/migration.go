@@ -2,7 +2,7 @@ package database
 
 import (
 	"log"
-	"pinjam-buku/internal/models"
+	models "pinjam-buku/model/domain"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +14,7 @@ func RunMigration(db *gorm.DB) {
 		&models.Book{},
 		&models.ProfileUser{},
 		&models.Loan{},
+		&models.Category{},
 	)
 
 	// mengecek error migration
