@@ -11,6 +11,9 @@ func main() {
 	// koneksi database
 	db := database.OpenConnection()
 
+	// hapus semua tabel (jika diperlukan)
+	// database.DropAllTables(db)
+
 	// running auto migration
 	database.RunMigration(db)
 	

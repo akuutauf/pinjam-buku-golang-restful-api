@@ -12,8 +12,12 @@ type User struct {
 	Email     string    `gorm:"column:email;size:60;not null;unique"`
 	Password  string    `gorm:"column:password;size:255;not null"`
 
+	// implementasi one to one (has one)
+	ProfileUser *ProfileUser `gorm:"foreignKey:id_user;references:ID"`
+
 	// relasi ke tabel child (has many)
 	Book []Book `gorm:"foreignKey:id_user;references:id"`
+	Loan []Loan `gorm:"foreignKey:id_user;references:id"`
 }
 
 // membuat method baru untuk mengganti nama tabel (alias)

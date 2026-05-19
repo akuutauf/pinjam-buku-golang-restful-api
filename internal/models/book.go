@@ -24,6 +24,9 @@ type Book struct {
 
 	// relasi ke tabel parent
 	User User `gorm:"foreignKey:id_user;references:id"`
+
+	// relasi ke tabel child (has many)
+	Loan []Loan `gorm:"foreignKey:id_book;references:id"`
 }
 
 // membuat method baru untuk mengganti nama tabel (alias)
