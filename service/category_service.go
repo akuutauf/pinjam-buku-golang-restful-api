@@ -1,8 +1,8 @@
 package service
 
 import (
-	"pinjam-buku/model/web"
 	"context"
+	"pinjam-buku/model/web/category"
 )
 
 // service disebut juga sebagai bussiness logic
@@ -21,9 +21,9 @@ type CategoryService interface {
 	// juga untuk response nya direkomendasikan jangan menggunakan domain, karena biasanya kalau-
 	// ditampilkan dalam bentuk table semua informasi tabel akan ditampilkan
 
-	Create(ctx context.Context, request web.CategoryCreateRequest) web.CategoryResponse
-	Update(ctx context.Context, requst web.CategoryUpdateRequest) web.CategoryResponse
-	Delete(ctx context.Context, categoryId int) // kkarena delete cuman butuh id saja dan tidak ada return value
-	FindById(ctx context.Context, categoryId int) web.CategoryResponse
-	FindAll(ctx context.Context, ) []web.CategoryResponse
+	Create(ctx context.Context, request category.CategoryCreateRequest) (category.CategoryResponse, error)
+	Update(ctx context.Context, requst category.CategoryUpdateRequest) (category.CategoryResponse, error)
+	Delete(ctx context.Context, categoryId string) error
+	FindById(ctx context.Context, categoryId string) (category.CategoryResponse, error)
+	FindAll(ctx context.Context) ([]category.CategoryResponse, error)
 }

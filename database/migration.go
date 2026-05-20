@@ -11,10 +11,10 @@ import (
 func RunMigration(db *gorm.DB) {
 	err := db.AutoMigrate(
 		&models.User{},
+		&models.Category{},
 		&models.Book{},
 		&models.ProfileUser{},
 		&models.Loan{},
-		&models.Category{},
 	)
 
 	// mengecek error migration
@@ -28,8 +28,9 @@ func RunMigration(db *gorm.DB) {
 // hapus semua tabel
 func DropAllTables(db *gorm.DB) {
 	err := db.Migrator().DropTable(
-		// urutan tabel dihapus dari paling bawah, agar tidak terjadi erorr FK 
+		// urutan tabel dihapus dari paling bawah, agar tidak terjadi erorr FK
 		&models.Loan{},
+		&models.Category{},
 		&models.Book{},
 		&models.ProfileUser{},
 		&models.User{},

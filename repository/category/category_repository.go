@@ -18,10 +18,10 @@ type CategoryRepository interface {
 	// kemudian untuk return value function, semuanya adalah data category asli, terkecuali delete (tidak mereturn data)-
 	// dan find all yang berisi kumpulan data category (slice category). Bila memerlukan tambahkan error (findById)
 	// dan ini 5 kontrak function yang dibutuhkan nantinya
-	
-	Save(ctx context.Context, tx *gorm.DB, category domain.Category) domain.Category
-	Update(ctx context.Context, tx *gorm.DB, category domain.Category) domain.Category
-	Delete(ctx context.Context, tx *gorm.DB, category domain.Category)
-	FindById(ctx context.Context, tx *gorm.DB, categoryId int) (domain.Category, error)
-	FindAll(ctx context.Context, tx *gorm.DB) []domain.Category
+
+	Save(ctx context.Context, tx *gorm.DB, category domain.Category) (domain.Category, error)
+	Update(ctx context.Context, tx *gorm.DB, category domain.Category) (domain.Category, error)
+	Delete(ctx context.Context, tx *gorm.DB, category domain.Category) error
+	FindById(ctx context.Context, tx *gorm.DB, categoryId string) (domain.Category, error)
+	FindAll(ctx context.Context, tx *gorm.DB) ([]domain.Category, error)
 }

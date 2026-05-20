@@ -18,13 +18,13 @@ import (
 // untuk data source name dari parameter open bisa mereferensikan dari dokumentasi berikut ini :-
 // https://github.com/go-sql-driver/mysql
 
-func NewDB() *gorm.DB  {
+func NewDB() *gorm.DB {
 	// load env
 	err := godotenv.Load()
 
 	// mengecek error load file env
 	helper.PanicIfError(err)
-	
+
 	// ambil env
 	dbHost := os.Getenv("DB_HOST")
 	dbPort := os.Getenv("DB_PORT")
@@ -41,7 +41,7 @@ func NewDB() *gorm.DB  {
 		dbPort,
 		dbName,
 	)
-	
+
 	// open connection
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		// mengaktifkan log bawaan
@@ -59,8 +59,8 @@ func NewDB() *gorm.DB  {
 	sqlDB, err := db.DB()
 
 	// connection pooling
-	sqlDB.SetMaxIdleConns(5) // maksimal koneksi ketika iddle adalah 5
-	sqlDB.SetMaxOpenConns(20) // maksimal koneksi yang terbuka pertama kali adalah 20
+	sqlDB.SetMaxIdleConns(5)                   // maksimal koneksi ketika iddle adalah 5
+	sqlDB.SetMaxOpenConns(20)                  // maksimal koneksi yang terbuka pertama kali adalah 20
 	sqlDB.SetConnMaxLifetime(60 * time.Minute) // maksimal waktu koneksi berjalan adalah 60 menit
 	sqlDB.SetConnMaxIdleTime(10 * time.Minute) // maksimal koneksi ketika iddle adalah 10 menit
 

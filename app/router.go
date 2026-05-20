@@ -4,25 +4,26 @@ import (
 	"pinjam-buku/controller"
 	"pinjam-buku/exception"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/gofiber/fiber/v2"
 )
 
 // membuat function untuk membuat route baru
-func NewRouter(categoryController controller.CategoryController) *httprouter.Router {
-	// mengimplementasikan router
-	router := httprouter.New()
+func NewRouter(categoryController controller.CategoryController) *fiber.App {
+	// membuat fiber app
+	router := fiber.New(fiber.Config{
+		// prefork cocok digunakan ketika aplikasi sudah di hosting di server
+		Prefork: false,
 
-	// membuat endpoint
-	router.GET("/api/categories", categoryController.FindAll)
-	router.GET("/api/categories/:categoryId", categoryController.FindById)
-	router.POST("/api/categories", categoryController.Create)
-	router.PUT("/api/categories/:categoryId", categoryController.Update)
-	router.DELETE("/api/categories/:categoryId", categoryController.Delete)
+		// global error handler
+		ErrorHandler: exception.ErrorHandler,
+	})
 
-	// membuat panic handler, agar ketika error si pengguna juga mendapatkan respon error,-
-	// contoh error seperti error validasi, error not found dan lain lain
-	router.PanicHandler = exception.ErrorHandler
+	// endpoint category
+	router.Get("/api/categories", categoryController.FindAll)
+	router.Get("/api/categories/:categoryId", categoryController.FindById)
+	router.Post("/api/categories", categoryController.Create)
+	router.Put("/api/categories/:categoryId", categoryController.Update)
+	router.Delete("/api/categories/:categoryId", categoryController.Delete)
 
-	// mengembalikan router
 	return router
 }

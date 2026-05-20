@@ -1,13 +1,11 @@
 package controller
 
 import (
-	"net/http"
-	"pinjam-buku/helper"
 	"pinjam-buku/model/web"
+	webCategory "pinjam-buku/model/web/category"
 	"pinjam-buku/service"
-	"strconv"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/gofiber/fiber/v2"
 )
 
 // membuat struct
@@ -28,129 +26,140 @@ func NewCategoryController(categoryService service.CategoryService) CategoryCont
 }
 
 // ini adalah kontrak untuk category controller
-func (controller *CategoryControllerImpl) Create(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	// membuat request create baru
-	// dengan melampirkan attribute dan validasinya
-	categoryCreateRequest := web.CategoryCreateRequest{}
+func (controller *CategoryControllerImpl) Create(ctx *fiber.Ctx) error {
+	// membuat request body
+	categoryCreateRequest := webCategory.CategoryCreateRequest{}
 
-	// memanggil function untuk menagkap data dari request body
-	helper.ReadFromRequestBody(request, &categoryCreateRequest)
+	// parsing body request
+	err := ctx.BodyParser(&categoryCreateRequest)
 
-	// memanggil function create pada kontrak CategoryService
-	// di dalam request sudah ada context, sehingga kita bisa memanfaatkannya
-	categoryResponse := controller.CategoryService.Create(request.Context(), categoryCreateRequest)
-
-	// membuat web response
-	webResponse := web.WebReponse{
-		Code: 200,
-		Status: "OK",
-		Data: categoryResponse,
+	// jika error parsing
+	if err != nil {
+		return err
 	}
 
-	// memanggil function write ke json
-	helper.WriteToResponseBody(writer, webResponse)
-}
+	// memanggil service
+	categoryResponse, err := controller.CategoryService.Create(
+		ctx.Context(),
+		categoryCreateRequest,
+	)
 
-func (controller *CategoryControllerImpl) Update(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	// membuat request update baru
-	// dengan melampirkan attribute dan validasinya
-	categoryUpdateRequest := web.CategoryUpdateRequest{}
-
-	// memanggil function untuk menagkap data dari request body
-	helper.ReadFromRequestBody(request, &categoryUpdateRequest)
-
-	// mengambil parameter category id melalui parameter
-	categoryId := params.ByName("categoryId")
-
-	// melakukan konversi categoryId menjadi string
-	atoi, err := strconv.Atoi(categoryId)
-
-	// mengecek error
-	helper.PanicIfError(err)
-
-	// mengambil category id yang sudah dikonversi ke string
-	categoryUpdateRequest.Id = atoi
-
-	// memanggil function update pada kontrak CategoryService
-	// di dalam request sudah ada context, sehingga kita bisa memanfaatkannya
-	categoryResponse := controller.CategoryService.Update(request.Context(), categoryUpdateRequest)
-
-	// membuat web response
-	webResponse := web.WebReponse{
-		Code: 200,
-		Status: "OK",
-		Data: categoryResponse,
+	// jika error service
+	if err != nil {
+		return err
 	}
 
-	// memanggil function write ke json
-	helper.WriteToResponseBody(writer, webResponse)
+	// return data
+	return ctx.Status(fiber.StatusOK).JSON(
+		web.WebResponse{
+			Code:   200,
+			Status: "OK",
+			Data:   categoryResponse,
+		},
+	)
 }
 
-func (controller *CategoryControllerImpl) Delete(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	// delete tidak membutuhkan request body, maka bisa langsung ke tahapan pengambilan parameter category id
-	// mengambil parameter category id melalui parameter
-	categoryId := params.ByName("categoryId")
+func (controller *CategoryControllerImpl) Update(ctx *fiber.Ctx) error {
+	// request body
+	categoryUpdateRequest := webCategory.CategoryUpdateRequest{}
 
-	// melakukan konversi categoryId menjadi string
-	id, err := strconv.Atoi(categoryId)
+	// parsing body
+	err := ctx.BodyParser(&categoryUpdateRequest)
 
-	// mengecek error
-	helper.PanicIfError(err)
-
-	// memanggil function delete pada kontrak CategoryService
-	// di dalam request sudah ada context, sehingga kita bisa memanfaatkannya
-	// delete tidak membutuhkan respon, sehingga bisa langsung mengakses function delete nya
-	controller.CategoryService.Delete(request.Context(), id)
-
-	// membuat web response
-	webResponse := web.WebReponse{
-		Code: 200,
-		Status: "OK",
+	// jika error parsing
+	if err != nil {
+		return err
 	}
 
-	// memanggil function write ke json
-	helper.WriteToResponseBody(writer, webResponse)
-}
+	// ambil parameter categoryId
+	categoryId := ctx.Params("categoryId")
 
-func (controller *CategoryControllerImpl) FindById(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	// findById tidak membutuhkan request body, maka bisa langsung ke tahapan pengambilan parameter category id
-	// mengambil parameter category id melalui parameter
-	categoryId := params.ByName("categoryId")
+	// set id ke request
+	categoryUpdateRequest.Id = categoryId
 
-	// melakukan konversi categoryId menjadi string
-	id, err := strconv.Atoi(categoryId)
+	// panggil service
+	categoryResponse, err := controller.CategoryService.Update(
+		ctx.Context(),
+		categoryUpdateRequest,
+	)
 
-	// mengecek error
-	helper.PanicIfError(err)
-
-	// memanggil function findById pada kontrak CategoryService
-	// di dalam request sudah ada context, sehingga kita bisa memanfaatkannya
-	categoryResponse := controller.CategoryService.FindById(request.Context(), id)
-
-	// membuat web response
-	webResponse := web.WebReponse{
-		Code: 200,
-		Status: "OK",
-		Data: categoryResponse,
+	// jika error service
+	if err != nil {
+		return err
 	}
 
-	// memanggil function write ke json
-	helper.WriteToResponseBody(writer, webResponse)
+	// response
+	return ctx.Status(fiber.StatusOK).JSON(
+		web.WebResponse{
+			Code:   200,
+			Status: "OK",
+			Data:   categoryResponse,
+		},
+	)
 }
 
-func (controller *CategoryControllerImpl) FindAll(writer http.ResponseWriter, request *http.Request, params httprouter.Params) {
-	// memanggil function findAll pada kontrak CategoryService
-	// di dalam request sudah ada context, sehingga kita bisa memanfaatkannya
-	categoryResponses := controller.CategoryService.FindAll(request.Context())
+func (controller *CategoryControllerImpl) Delete(ctx *fiber.Ctx) error {
+	// ambil parameter categoryId
+	categoryId := ctx.Params("categoryId")
 
-	// membuat web response
-	webResponse := web.WebReponse{
-		Code: 200,
-		Status: "OK",
-		Data: categoryResponses,
+	// panggil service delete
+	controller.CategoryService.Delete(
+		ctx.Context(),
+		categoryId,
+	)
+
+	// response
+	return ctx.Status(fiber.StatusOK).JSON(
+		web.WebResponse{
+			Code:   200,
+			Status: "OK",
+			Data:   "OK",
+		},
+	)
+}
+
+func (controller *CategoryControllerImpl) FindById(ctx *fiber.Ctx) error {
+	// ambil parameter categoryId
+	categoryId := ctx.Params("categoryId")
+
+	// panggil service
+	categoryResponse, err := controller.CategoryService.FindById(
+		ctx.Context(),
+		categoryId,
+	)
+
+	// jika error service
+	if err != nil {
+		return err
 	}
 
-	// memanggil function write ke json
-	helper.WriteToResponseBody(writer, webResponse)
+	// response
+	return ctx.Status(fiber.StatusOK).JSON(
+		web.WebResponse{
+			Code:   200,
+			Status: "OK",
+			Data:   categoryResponse,
+		},
+	)
 }
 
+func (controller *CategoryControllerImpl) FindAll(ctx *fiber.Ctx) error {
+	// memanggil service
+	categoryResponses, err := controller.CategoryService.FindAll(
+		ctx.Context(),
+	)
+
+	// jika error service
+	if err != nil {
+		return err
+	}
+
+	// response
+	return ctx.Status(fiber.StatusOK).JSON(
+		web.WebResponse{
+			Code:   200,
+			Status: "OK",
+			Data:   categoryResponses,
+		},
+	)
+}

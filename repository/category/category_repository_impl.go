@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"pinjam-buku/helper"
 	"pinjam-buku/model/domain"
 
 	"gorm.io/gorm"
@@ -12,6 +11,7 @@ import (
 
 // membuat struct category implementation
 type CategoryRepositoryImpl struct {
+	//
 }
 
 // mendefinisikan constructor
@@ -20,18 +20,20 @@ func NewCategoryRepository() CategoryRepository {
 }
 
 // membuat method milik struct CategoryRepositoryImpl yang mana menerapkan kontrak sebelumnya
-func (repository *CategoryRepositoryImpl) Save(ctx context.Context, tx *gorm.DB, category domain.Category) domain.Category {
+func (repository *CategoryRepositoryImpl) Save(ctx context.Context, tx *gorm.DB, category domain.Category) (domain.Category, error) {
 
 	// insert data category
 	err := tx.WithContext(ctx).Create(&category).Error
 
-	// cek error
-	helper.PanicIfError(err)
+	// mengecek error
+	if err != nil {
+		return category, err
+	}
 
-	return category
+	return category, nil
 }
 
-func (repository *CategoryRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, category domain.Category) domain.Category {
+func (repository *CategoryRepositoryImpl) Update(ctx context.Context, tx *gorm.DB, category domain.Category) (domain.Category, error) {
 
 	// update data category
 	err := tx.WithContext(ctx).
@@ -39,28 +41,36 @@ func (repository *CategoryRepositoryImpl) Update(ctx context.Context, tx *gorm.D
 		Name: category.Name,
 	}).Error
 
-	// cek error
-	helper.PanicIfError(err)
+	// mengecek error
+	if err != nil {
+		return category, err
+	}
 
-	return category
+	return category, nil
 }
 
-func (repository *CategoryRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, category domain.Category) {
+func (repository *CategoryRepositoryImpl) Delete(ctx context.Context, tx *gorm.DB, category domain.Category) error {
 
 	// delete category
 	err := tx.WithContext(ctx).Delete(&category).Error
 
-	// cek error
-	helper.PanicIfError(err)
+	// mengecek error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (repository *CategoryRepositoryImpl) FindById(ctx context.Context, tx *gorm.DB, categoryId int) (domain.Category, error) {
+func (repository *CategoryRepositoryImpl) FindById(ctx context.Context, tx *gorm.DB, categoryId string) (domain.Category, error) {
 
 	category := domain.Category{}
 
 	// mencari category berdasarkan id
 	err := tx.WithContext(ctx).
-		First(&category, categoryId).Error
+		Where("id = ?", categoryId).
+		First(&category).
+		Error
 
 	// jika error
 	if err != nil {
@@ -70,7 +80,7 @@ func (repository *CategoryRepositoryImpl) FindById(ctx context.Context, tx *gorm
 	return category, nil
 }
 
-func (repository *CategoryRepositoryImpl) FindAll(ctx context.Context, tx *gorm.DB) []domain.Category {
+func (repository *CategoryRepositoryImpl) FindAll(ctx context.Context, tx *gorm.DB) ([]domain.Category, error) {
 
 	var categories []domain.Category
 
@@ -78,8 +88,10 @@ func (repository *CategoryRepositoryImpl) FindAll(ctx context.Context, tx *gorm.
 	err := tx.WithContext(ctx).
 		Find(&categories).Error
 
-	// cek error
-	helper.PanicIfError(err)
+	// mengecek error
+	if err != nil {
+		return categories, err
+	}
 
-	return categories
+	return categories, nil
 }

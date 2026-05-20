@@ -2,13 +2,10 @@ package domain
 
 import (
 	"time"
-
-	"github.com/google/uuid"
-	"gorm.io/gorm"
 )
 
 type Loan struct {
-	BaseModel // digunakan untuk salin field id, created_at, dan updated_at
+	BaseModel // template id yang menggunakan uuid
 
 	BorrowerName  string    `gorm:"column:borrow_name;size:100;not null"`
 	BorrowerPhone string    `gorm:"column:borrow_phone;size:15;not null"`
@@ -19,8 +16,10 @@ type Loan struct {
 	Note          string    `gorm:"column:note;type:text"`
 
 	// foreign key ke model lain
-	IdUser    string `gorm:"column:id_user;size:36;not null"`
-	IdBook    string `gorm:"column:id_book;size:36;not null"`
+	IdUser string `gorm:"column:id_user;size:36;not null"`
+	IdBook string `gorm:"column:id_book;size:36;not null"`
+
+	BaseTime // template created_at, dan updated_at diletakkan di akhir kolom
 
 	// relasi ke tabel parent
 	User User `gorm:"foreignKey:id_user;references:id"`
@@ -30,10 +29,4 @@ type Loan struct {
 // membuat method baru untuk mengganti nama tabel (alias)
 func (u *Loan) TableName() string {
 	return "loans"
-}
-
-// menambahkan hook sebelum menambahkan data loan, maka generate uuid untuk id loan dilakukan disini
-func (u *Loan) BeforeCreate(tx *gorm.DB) (err error) {
-	u.ID = uuid.NewString()
-	return
 }

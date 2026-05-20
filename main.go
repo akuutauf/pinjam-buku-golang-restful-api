@@ -1,7 +1,6 @@
 package main
 
 import (
-	"net/http"
 	"pinjam-buku/app"
 	"pinjam-buku/controller"
 	"pinjam-buku/database"
@@ -14,6 +13,10 @@ import (
 )
 
 func main() {
+	// memperbaiki :
+	// 1. log console dan file
+	// 2. memperbaiki crud category
+
 	// koneksi database
 	db := app.NewDB()
 
@@ -22,6 +25,9 @@ func main() {
 
 	// running auto migration
 	database.RunMigration(db)
+
+	// seeder (jika diperlukan/biasanya cukup sekali)
+	database.RunSeeder(db)
 
 	// membuat validator
 	validate := validator.New()
@@ -34,21 +40,15 @@ func main() {
 
 	// membuat category controller
 	categoryController := controller.NewCategoryController(categoryService)
-	
+
 	// implementasi router
 	router := app.NewRouter(categoryController)
 
-	// membuat server
-	server := http.Server{
-		Addr: "localhost:3000",
-		Handler: middleware.NewAuthMiddleware(router),
-
-		// ketika auth middleware sudah ditambahkan, maka handler yang digunakan adalah-
-		// router yang dibungkus dengan auth middleware
-	}
+	// register middleware
+	middleware.LoggerMiddleware(router)
 
 	// menjalankan server
-	err := server.ListenAndServe()
+	err := router.Listen(":3000")
 
 	// mengecek error
 	helper.PanicIfError(err)

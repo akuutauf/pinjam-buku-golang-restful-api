@@ -6,3 +6,5 @@
 09:24:15 | 404 |            0s | 127.0.0.1 | GET | /api/ | Cannot GET /api/
 09:27:37 | 404 |            0s | 127.0.0.1 | GET | /api/ | Cannot GET /api/
 09:28:09 | 200 |            0s | 127.0.0.1 | GET | /api/ | -
+10:41:47 | 500 |       554.1µs | 127.0.0.1 | GET | / | Cannot GET /
+10:41:47 | 500 |       629.6µs | 127.0.0.1 | GET | /favicon.ico | Cannot GET /favicon.ico
