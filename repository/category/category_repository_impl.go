@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"errors"
 	"pinjam-buku/model/domain"
 
 	"gorm.io/gorm"
@@ -63,18 +64,21 @@ func (repository *CategoryRepositoryImpl) Delete(ctx context.Context, tx *gorm.D
 }
 
 func (repository *CategoryRepositoryImpl) FindById(ctx context.Context, tx *gorm.DB, categoryId string) (domain.Category, error) {
+	// menyiapkan data category
+	var category domain.Category
 
-	category := domain.Category{}
-
-	// mencari category berdasarkan id
-	err := tx.WithContext(ctx).
+	result := tx.WithContext(ctx).
 		Where("id = ?", categoryId).
-		First(&category).
-		Error
+		First(&category)
 
-	// jika error
-	if err != nil {
-		return category, err
+	// jika error database
+	if result.Error != nil {
+		return category, result.Error
+	}
+
+	// jika data tidak ditemukan
+	if result.RowsAffected == 0 {
+		return category, errors.New("category not found")
 	}
 
 	return category, nil

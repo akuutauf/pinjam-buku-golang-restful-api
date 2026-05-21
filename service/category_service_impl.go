@@ -74,6 +74,11 @@ func (service CategoryServiceImpl) Create(ctx context.Context, request category.
 		categoryDomain,
 	)
 
+	// check error save
+	if err != nil {
+		return category.CategoryResponse{}, err
+	}
+
 	// return response
 	return helper.ToCategoryResponse(categoryDomain), nil
 }
@@ -108,6 +113,9 @@ func (service CategoryServiceImpl) Update(ctx context.Context, request category.
 		return category.CategoryResponse{},
 			exception.NewNotFoundError(err.Error())
 	}
+
+	// assign data baru
+	categoryDomain.Name = request.Name
 
 	// save update
 	categoryDomain, err = service.CategoryRepository.Update(

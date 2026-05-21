@@ -103,10 +103,15 @@ func (controller *CategoryControllerImpl) Delete(ctx *fiber.Ctx) error {
 	categoryId := ctx.Params("categoryId")
 
 	// panggil service delete
-	controller.CategoryService.Delete(
+	err := controller.CategoryService.Delete(
 		ctx.Context(),
 		categoryId,
 	)
+
+	// melakukan cek error
+	if err != nil {
+		return err
+	}
 
 	// response
 	return ctx.Status(fiber.StatusOK).JSON(

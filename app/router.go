@@ -3,27 +3,34 @@ package app
 import (
 	"pinjam-buku/controller"
 	"pinjam-buku/exception"
+	"pinjam-buku/middleware"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-// membuat function untuk membuat route baru
-func NewRouter(categoryController controller.CategoryController) *fiber.App {
-	// membuat fiber app
+func NewRouter(
+	categoryController controller.CategoryController,
+	// userController controller.UserController, // controller untuk route yang lain
+) *fiber.App {
+
+	// create fiber app
 	router := fiber.New(fiber.Config{
-		// prefork cocok digunakan ketika aplikasi sudah di hosting di server
 		Prefork: false,
 
 		// global error handler
 		ErrorHandler: exception.ErrorHandler,
 	})
 
-	// endpoint category
-	router.Get("/api/categories", categoryController.FindAll)
-	router.Get("/api/categories/:categoryId", categoryController.FindById)
-	router.Post("/api/categories", categoryController.Create)
-	router.Put("/api/categories/:categoryId", categoryController.Update)
-	router.Delete("/api/categories/:categoryId", categoryController.Delete)
+	// global middleware
+	middleware.LoggerMiddleware(router)
+
+	// recover panic middleware
+	router.Use(recover.New())
+
+	// register routes
+	RegisterCategoryRoute(router, categoryController)
+	// RegisterUserRoute(router, userController) // untuk contoh route yang lain
 
 	return router
 }

@@ -5,7 +5,6 @@ import (
 	"pinjam-buku/controller"
 	"pinjam-buku/database"
 	"pinjam-buku/helper"
-	"pinjam-buku/middleware"
 	repository "pinjam-buku/repository/category"
 	"pinjam-buku/service"
 
@@ -13,21 +12,20 @@ import (
 )
 
 func main() {
-	// memperbaiki :
-	// 1. log console dan file
-	// 2. memperbaiki crud category
+	// target :
+	// 1. otentikasi / auth (register/login)
 
 	// koneksi database
 	db := app.NewDB()
 
 	// hapus semua tabel (jika diperlukan)
-	database.DropAllTables(db)
+	// database.DropAllTables(db)
 
 	// running auto migration
 	database.RunMigration(db)
 
 	// seeder (jika diperlukan/biasanya cukup sekali)
-	database.RunSeeder(db)
+	// database.RunSeeder(db)
 
 	// membuat validator
 	validate := validator.New()
@@ -43,9 +41,6 @@ func main() {
 
 	// implementasi router
 	router := app.NewRouter(categoryController)
-
-	// register middleware
-	middleware.LoggerMiddleware(router)
 
 	// menjalankan server
 	err := router.Listen(":3000")
