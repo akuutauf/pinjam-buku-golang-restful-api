@@ -6,6 +6,7 @@ type User struct {
 	Username string `gorm:"column:username;size:20;not null;unique"`
 	Email    string `gorm:"column:email;size:60;not null;unique"`
 	Password string `gorm:"column:password;size:255;not null"`
+	Hint     string `gorm:"column:hint;size:20;not null"`
 
 	BaseTime // template created_at, dan updated_at diletakkan di akhir kolom
 

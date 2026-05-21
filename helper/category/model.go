@@ -1,4 +1,4 @@
-package helper
+package category
 
 import (
 	"pinjam-buku/model/domain"

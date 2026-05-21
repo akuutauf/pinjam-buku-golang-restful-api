@@ -1,7 +1,8 @@
 package app
 
 import (
-	"pinjam-buku/controller"
+	category "pinjam-buku/controller/category"
+	// user "pinjam-buku/controller/user"
 	"pinjam-buku/exception"
 	"pinjam-buku/middleware"
 
@@ -10,8 +11,8 @@ import (
 )
 
 func NewRouter(
-	categoryController controller.CategoryController,
-	// userController controller.UserController, // controller untuk route yang lain
+	categoryController category.CategoryController,
+	// userController user.UserController,
 ) *fiber.App {
 
 	// create fiber app
@@ -30,7 +31,7 @@ func NewRouter(
 
 	// register routes
 	RegisterCategoryRoute(router, categoryController)
-	// RegisterUserRoute(router, userController) // untuk contoh route yang lain
+	// RegisterUserRoute(router, userController)
 
 	return router
 }

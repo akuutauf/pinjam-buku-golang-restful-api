@@ -13,3 +13,33 @@ package installer :
 running project & auto migrate :
 - go run main.go
 - air (hot reload)
+
+catatan :
+- controller - kasir / menerima pesanan (request)
+- service - chef / dapur
+- repository - mengambil barang dari gudang
+- database - gudang
+
+1. Controller :
+Tugas controller:
+✅ menerima request
+✅ parsing body
+✅ ambil params
+✅ panggil service
+✅ return response JSON
+
+2. Service :
+Tugas service :
+✅ validasi
+✅ hashing password
+✅ generate JWT
+✅ cek email sudah ada
+✅ transaksi database
+✅ orchestration logic
+
+3. Repository :
+Tugas repository :
+✅ query
+✅ insert
+✅ update
+✅ delete

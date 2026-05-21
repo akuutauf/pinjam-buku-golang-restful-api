@@ -2,12 +2,12 @@ package main
 
 import (
 	"pinjam-buku/app"
-	"pinjam-buku/controller"
-
-	// "pinjam-buku/database"
+	"pinjam-buku/database"
 	"pinjam-buku/helper"
-	repository "pinjam-buku/repository/category"
-	"pinjam-buku/service"
+
+	categoryController "pinjam-buku/controller/category"
+	categoryRepository "pinjam-buku/repository/category"
+	categoryService "pinjam-buku/service/category"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -20,25 +20,25 @@ func main() {
 	db := app.NewDB()
 
 	// hapus semua tabel (jika diperlukan)
-	// database.DropAllTables(db)
+	database.DropAllTables(db)
 
 	// running auto migration
-	// database.RunMigration(db)
+	database.RunMigration(db)
 
 	// seeder (jika diperlukan/biasanya cukup sekali)
-	// database.RunSeeder(db)
+	database.RunSeeder(db)
 
 	// membuat validator
 	validate := validator.New()
 
 	// membuat repository
-	categoryRepository := repository.NewCategoryRepository()
+	categoryRepository := categoryRepository.NewCategoryRepository()
 
 	// membuat service
-	categoryService := service.NewCategoryService(categoryRepository, db, validate)
+	categoryService := categoryService.NewCategoryService(categoryRepository, db, validate)
 
 	// membuat category controller
-	categoryController := controller.NewCategoryController(categoryService)
+	categoryController := categoryController.NewCategoryController(categoryService)
 
 	// implementasi router
 	router := app.NewRouter(categoryController)

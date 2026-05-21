@@ -1,9 +1,10 @@
-package service
+package category
 
 import (
 	"context"
 	"pinjam-buku/exception"
 	"pinjam-buku/helper"
+	categoryHelper "pinjam-buku/helper/category"
 	"pinjam-buku/model/domain"
 	"pinjam-buku/model/web/category"
 	repository "pinjam-buku/repository/category"
@@ -80,7 +81,7 @@ func (service CategoryServiceImpl) Create(ctx context.Context, request category.
 	}
 
 	// return response
-	return helper.ToCategoryResponse(categoryDomain), nil
+	return categoryHelper.ToCategoryResponse(categoryDomain), nil
 }
 
 func (service CategoryServiceImpl) Update(ctx context.Context, request category.CategoryUpdateRequest) (category.CategoryResponse, error) {
@@ -129,7 +130,7 @@ func (service CategoryServiceImpl) Update(ctx context.Context, request category.
 	}
 
 	// return response
-	return helper.ToCategoryResponse(categoryDomain), nil
+	return categoryHelper.ToCategoryResponse(categoryDomain), nil
 }
 
 func (service CategoryServiceImpl) Delete(ctx context.Context, categoryId string) (err error) {
@@ -192,7 +193,7 @@ func (service CategoryServiceImpl) FindById(ctx context.Context, categoryId stri
 	}
 
 	// mengkonversi data category dari object menjadi response
-	response = helper.ToCategoryResponse(categoryDomain)
+	response = categoryHelper.ToCategoryResponse(categoryDomain)
 
 	return response, nil
 }
@@ -219,5 +220,5 @@ func (service CategoryServiceImpl) FindAll(ctx context.Context) (response []cate
 	}
 
 	// melakkan return dan konversi ke bentuk slice category responses
-	return helper.ToCategoryResponses(categories), nil
+	return categoryHelper.ToCategoryResponses(categories), nil
 }

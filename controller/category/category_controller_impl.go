@@ -1,9 +1,9 @@
-package controller
+package category
 
 import (
 	"pinjam-buku/model/web"
 	webCategory "pinjam-buku/model/web/category"
-	"pinjam-buku/service"
+	"pinjam-buku/service/category"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -12,13 +12,13 @@ import (
 type CategoryControllerImpl struct {
 	// menambahkan category service
 	// CategoryService adalah sebuah interface, maka tidak perlu menggunakan pointer
-	CategoryService service.CategoryService
+	CategoryService category.CategoryService
 }
 
 // menambahkan function untuk kebutuhan endpoint (bukan method milik CategoryController)
 
 // membuat untuk router dengan return CategoryController (interface)
-func NewCategoryController(categoryService service.CategoryService) CategoryController {
+func NewCategoryController(categoryService category.CategoryService) CategoryController {
 	// melakukan return dengan ponter
 	return &CategoryControllerImpl{
 		CategoryService: categoryService,
