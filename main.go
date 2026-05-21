@@ -3,7 +3,8 @@ package main
 import (
 	"pinjam-buku/app"
 	"pinjam-buku/controller"
-	"pinjam-buku/database"
+
+	// "pinjam-buku/database"
 	"pinjam-buku/helper"
 	repository "pinjam-buku/repository/category"
 	"pinjam-buku/service"
@@ -22,7 +23,7 @@ func main() {
 	// database.DropAllTables(db)
 
 	// running auto migration
-	database.RunMigration(db)
+	// database.RunMigration(db)
 
 	// seeder (jika diperlukan/biasanya cukup sekali)
 	// database.RunSeeder(db)

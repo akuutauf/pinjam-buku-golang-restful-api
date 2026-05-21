@@ -7,7 +7,9 @@ package installer :
 - go get github.com/julienschmidt/httprouter
 - go get github.com/go-playground/validator/v10
 - github.com/josharian/impl@v1.4.0
+- go install github.com/air-verse/air@latest
 - go mod tidy (optional/fixing package)
 
 running project & auto migrate :
 - go run main.go
+- air (hot reload)
